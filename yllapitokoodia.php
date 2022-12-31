@@ -1,25 +1,16 @@
 <?php
 
-// Tämä koodi on harjoituskoodia ja keskeneräistä... tästä olisi hyvä jatkaa ylläpito-osiota
+// Tämä koodi on harjoituskoodia ja keskeneräistä... tästä olisi hyvä jatkaa lisäämällä toimintoja ylläpito-osioon
 
-
-// Tuoteryhmän poistolomakkeen lähetystiedot
-if (isset($_POST['poista_tuoteryhma'])) {
-    $tuoteryhma_id = $_POST['tuoteryhma_id'];
-
-    // Poistetaan tuoteryhmä tietokannasta
-    poistaTuoteryhma($tuoteryhma_id, $db);
-}
 
 // Tuoteryhmän päivityslomakkeen lähetystiedot
-if (isset($_POST['update_category'])) {
+if (isset($_POST['update_tuoteryhma'])) {
     $tuoteryhma_id = $_POST['tuoteryhma_id'];
     $tuoteryhma_nimi = $_POST['tuoteryhma_nimi'];
 
     // Päivitetään tuoteryhmä tietokantaan
     paivitaTuoteryhma($tuoteryhma_id, $tuoteryhma_nimi, $db);
 }
-
 
 // Poistetaan tuoteryhmä tietokannasta
 function poistaTuoteryhma($id, $db_conn)

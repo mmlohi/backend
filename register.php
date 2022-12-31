@@ -10,7 +10,7 @@ if (isset($_POST['kayttaja'])) {
     $nimi = $_POST['nimi'];
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $password_confirm = $_POST['salasana_vahvistus'];
+    $password_confirm = $_POST['password_confirm '];
     $rooli = $_POST['rooli'];
 
     // Tarkistetaan, onko käyttäjätunnus jo käytössä
@@ -59,8 +59,8 @@ if (isset($_POST['kayttaja'])) {
     <input type="text" name="username"><br>
     <label for="salasana">Salasana:</label><br>
     <input type="password" name="password"><br>
-    <label for="salasana_vahvistus">Vahvista salasana:</label><br>
-    <input type="salasana" name="salasana_vahvistus"><br>
+    <label for="password_confirm">Vahvista salasana:</label><br>
+    <input type="password" name="password_confirm"><br>
     <label for="rooli">rooli:</label><br>
     <input type="rooli" name="rooli"><br>
     <input type="submit" name="kayttaja" value="Rekisteröidy">

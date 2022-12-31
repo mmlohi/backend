@@ -32,21 +32,27 @@ if (isset($_POST['login'])) {
   if (!empty($username) && !empty($password)) {
     try {
       // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
-      if (tarkistaKirjautuminen($username, $password, $db)) {
-        // Asetetaan kirjautumistieto sessiomuuttujaan
-        $_SESSION['kayttajatunnus'] = $username;
-        
-        if (isset($_SESSION['kayttajatunnus'])) {
-          // Käyttäjä on kirjautunut sisään, näytetään ylläpitotoiminnot
-          
+  if (isset($_SESSION['kayttajatunnus'])) {
+// Käyttäjä on kirjautunut sisään, tarkistetaan onko käyttäjä ylläpitäjä
+if (tarkistaYllapitaja($_SESSION['kayttajatunnus'], $db)) {
+// Käyttäjä on ylläpitäjä, näytetään ylläpito-sivu
+include 'yllapito.php';
+} else {
+// Käyttäjä ei ole ylläpitäjä, näytetään viesti
+echo "Sinulla ei ole pääsyä ylläpito-sivulle.";
+}
+} else {
+// Käyttäjä ei ole kirjautunut sisään, näytetään sisäänkirjautumislomake
+// Sisäänkirjautumislomakkeen lähetystiedot
+if (isset($_POST['login'])) {
+// Sanitoidaan käyttäjän syöttämät tiedot
+$username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
+$password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
         } else {
           // Käyttäjä ei ole kirjautunut sisään, näytetään sisäänkirjautumislomake
       
         }
-      } else {
-        // Käyttäjätunnus tai salasana on  on väärin
-        echo "Väärä käyttäjätunnus tai salasana.";
-      }
+    }
     } catch (PDOException $e) {
       // Virheenkäsittely
     }

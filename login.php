@@ -14,7 +14,7 @@ if (isset($_SESSION['kayttajatunnus'])) {
 
   if (tarkistaYllapitaja($_SESSION['kayttajatunnus'], $db)) {
     // Käyttäjä on ylläpitäjä, näytetään ylläpito-sivu
- 
+
   } else {
     // Käyttäjä ei ole ylläpitäjä, näytetään viesti
     echo "Sinulla ei ole pääsyä ylläpito-sivulle.";
@@ -25,25 +25,27 @@ if (isset($_SESSION['kayttajatunnus'])) {
     // Sanitoidaan käyttäjän syöttämät tiedot
     $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
     $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
-    
+
     // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
     if (!empty($username) && !empty($password)) {
 
-    try {
-    // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
-    if (tarkistaKirjautuminen($username, $password, $db)) {
-      
-    // Asetetaan kirjautumistieto sessiomuuttujaan
-    $_SESSION['kayttajatunnus'] = $username;
-    // ...
-    }
-    } catch (PDOException $e) {
-    // Virheenkäsittely
-    }
+      try {
+        // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
+        if (tarkistaKirjautuminen($username, $password, $db)) {
+          // Kirjautuminen onnistui
+
+          // Asetetaan kirjautumistieto sessiomuuttujaan
+          $_SESSION['kayttajatunnus'] = $username;
+          // Ohjataan käyttäjä ylläpito-sivulle
+
+        }
+      } catch (PDOException $e) {
+        // Virheenkäsittely
+      }
     } else {
-    echo "Syötä käyttäjätunnus ja salasana.";
+      echo "Syötä käyttäjätunnus ja salasana.";
     }
-    }
+  }
   // Uloskirjautumislomakkeen lähetystiedot
   if (isset($_POST['logout'])) {
     // Poistetaan kirjautumistieto sessiomuuttujasta
@@ -66,5 +68,3 @@ if (isset($_SESSION['kayttajatunnus'])) {
 <form action="" method="post">
   <input type="submit" name="logout" value="Kirjaudu ulos">
 </form>
-
-
