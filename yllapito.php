@@ -2,16 +2,17 @@
 // Alustetaan sessiomuuttuja
 session_start();
 
-require('functions.php');
-require('headers.php');
-
-$db = createSqliteConnection("designtuotteet.db");
+// Yhdistetään tietokantaan
+$db = new PDO("sqlite:designtuotteet.db");
 
 // Sisäänkirjautumislomakkeen lähetystiedot
 if (isset($_POST['login'])) {
-    $username = filter_var($_POST['kayttajatunnus'], FILTER_SANITIZE_SPECIAL_CHARS);
-    $password = filter_var($_POST['salasana'], FILTER_SANITIZE_SPECIAL_CHARS);
-  
+  // Sanitoidaan käyttäjän syöttämät tiedot
+  $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
+  $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
+
+  // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
+  if (!empty($username) && !empty($password)) {
     try {
       // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
       if (tarkistaKirjautuminen($username, $password, $db)) {
@@ -27,19 +28,22 @@ if (isset($_POST['login'])) {
         }
       } else {
         // Käyttäjätunnus tai salasana on  on väärin
-          echo "Väärä käyttäjätunnus tai salasana.";
-        }
+        echo "Väärä käyttäjätunnus tai salasana.";
+      }
     } catch (PDOException $e) {
       // Virheenkäsittely
     }
+  } else {
+    echo "Syötä käyttäjätunnus ja salasana.";
   }
-  
-  // Uloskirjautumislomakkeen lähetystiedot
-  if (isset($_POST['logout'])) {
-    // Poistetaan kirjautumistieto sessiomuuttujasta
-    unset($_SESSION['kayttajatunnus']);
-  }
-  
+}
+
+// Uloskirjautumislomakkeen lähetystiedot
+if (isset($_POST['logout'])) {
+  // Poistetaan kirjautumistieto sessiomuuttujasta
+  unset($_SESSION['kayttajatunnus']);
+}
+
 ?>
 <!-- Sisäänkirjautumislomake -->
 <form action="" method="post">
@@ -72,6 +76,7 @@ if ($result !== false && $result['rooli'] == 'ylläpitäjä') {
     //echo "<p><a href='muokkaaKayttajaa.php'>Muokkaa käyttäjää</a></p>";
     //echo "<p><a href='poistaKayttaja.php'>Poista käyttäjä</a></p>";
     echo "<p><a href='lisaaTuote.php'>Lisää Tuote</a></p>";
+    echo "<p><a href='lisaaTuoteryhma.php'>Lisää Tuoteryhmä</a></p>";
     echo "<p><a href='luePalaute.php'>Lue Palautteet</a></p>";
     } else 
     // Käyttäjä ei ole ylläpitäjä, näytetään normaalit toiminnot
