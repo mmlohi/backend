@@ -9,8 +9,8 @@ $db = createSqliteConnection("designtuotteet.db");
 
 // Sisäänkirjautumislomakkeen lähetystiedot
 if (isset($_POST['login'])) {
-  $username = $_POST['kayttajatunnus'];
-  $password = $_POST['salasana'];
+  $username = filter_var($_POST['kayttajatunnus'], FILTER_SANITIZE_SPECIAL_CHARS);
+  $password = filter_var($_POST['salasana'], FILTER_SANITIZE_SPECIAL_CHARS);
 
   try {
     // Haetaan tietokannasta käyttäjän salasana hashausmerkkijonon perusteella
@@ -38,16 +38,14 @@ if (isset($_POST['login'])) {
     // Poistetaan kirjautumistieto sessiomuuttujasta
     unset($_SESSION['kayttajatunnus']);
   }
+}
 
-
-  // Ylläpito-sivulle pääsy
-  if (isset($_SESSION['username']) && tarkistaYllapitaja($_SESSION['username'], $db_conn)) {
-    // Näytetään linkki ylläpito-sivulle
-    echo "<a href='yllapito.php'>Ylläpito</a>";
-  }
+// Ylläpito-sivulle pääsy
+if (isset($_SESSION['username']) && tarkistaYllapitaja($_SESSION['username'], $db_conn)) {
+  // Näytetään linkki ylläpito-sivulle
+  echo "<a href='yllapito.php'>Ylläpito</a>";
 }
 ?>
-
 <!-- Sisäänkirjautumislomake -->
 <form action="" method="post">
   <h3>Kirjaudu</h3>

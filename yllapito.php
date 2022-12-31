@@ -2,6 +2,9 @@
 // Alustetaan sessiomuuttuja
 session_start();
 
+require_once 'dbconnection.php';
+require_once 'functions.php';
+
 // Yhdistetään tietokantaan
 $db = new PDO("sqlite:designtuotteet.db");
 
