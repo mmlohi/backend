@@ -8,6 +8,20 @@ require_once 'functions.php';
 // Yhdistetään tietokantaan
 $db = new PDO("sqlite:designtuotteet.db");
 
+// Tarkistetaan, onko käyttäjä jo kirjautunut sisään
+if (isset($_SESSION['kayttajatunnus'])) {
+  // Käyttäjä on jo kirjautunut sisään
+
+  // Tarkistetaan, onko käyttäjä ylläpitäjä
+  if (tarkistaYllapitaja($_SESSION['kayttajatunnus'], $db)) {
+    // Käyttäjä on ylläpitäjä, näytetään ylläpito-sivu
+    include 'yllapito.php';
+  } else {
+    // Käyttäjä ei ole ylläpitäjä, näytetään viesti
+    echo "Sinulla ei ole pääsyä ylläpito-sivulle.";
+  }
+}
+
 // Sisäänkirjautumislomakkeen lähetystiedot
 if (isset($_POST['login'])) {
   // Sanitoidaan käyttäjän syöttämät tiedot

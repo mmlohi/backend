@@ -31,14 +31,12 @@ if (isset($_POST['kayttaja'])) {
         } else {
             // Salasana on väärä
         }
-
-
             // Lisätään uusi käyttäjä tietokantaan
-        $query = $db->prepare("INSERT INTO kayttaja (nimi, kayttajatunnus, salasana, rooli) VALUES (:nimi, :kayttajatunnus, :salasana, :rooli)");
-        $query->bindParam(':nimi', $nimi, PDO::PARAM_STR);
-        $query->bindParam(':kayttajatunnus', $username, PDO::PARAM_STR);
-        $query->bindParam(':salasana', $password,  PDO::PARAM_STR);
-        $query->bindParam(':rooli', $rooli,  PDO::PARAM_STR);
+            $query = $db->prepare("INSERT INTO kayttaja (nimi, kayttajatunnus, salasana, rooli) VALUES (:nimi, :kayttajatunnus, :salasana, :rooli)");
+            $query->bindParam(':nimi', $nimi, PDO::PARAM_STR);
+            $query->bindParam(':kayttajatunnus', $username, PDO::PARAM_STR);
+            $query->bindParam(':salasana', $hashed_password, PDO::PARAM_STR);
+            $query->bindParam(':rooli', $rooli, PDO::PARAM_STR);
 
         try {
             $query->execute();
