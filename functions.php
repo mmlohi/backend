@@ -27,14 +27,15 @@ function returnError(PDOException $pdoex): void
     exit();
 }
 
-function tarkistaYllapitaja($kayttajatunnus, $db) {
-    $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :kayttajatunnus AND rooli = 'yllapitaja'");
+function tarkistaYllapitaja($kayttajatunnus, $rooli, $db) {
+    $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :kayttajatunnus AND rooli = :rooli");
     $query->bindParam(':kayttajatunnus', $kayttajatunnus);
+    $query->bindParam(':rooli', $rooli);
     $query->execute();
     $result = $query->fetch();
     
     return $result ? true : false;
-}
+    }
 
 function tarkistaKirjautuminen($username, $password, $db) {
     $stmt = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :username AND salasana = :password");

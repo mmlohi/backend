@@ -88,3 +88,4 @@ VALUES (1, '2022-12-31', '2023-01-02');
 
 INSERT INTO tilausrivi (tilaus_id, tuote_id, maara, hinta)
 VALUES (1, 1, 2, 15.99);
+

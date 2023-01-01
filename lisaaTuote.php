@@ -8,7 +8,7 @@ if (isset($_SESSION['username'])) {
 
 // Tarkistetaan onko lomakkeen lähetyspainike painettu
 if (isset($_POST['lisaa_tuote'])) {
-  
+
   // Sanitoidaan käyttäjän syöttämät tiedot
   $nimi = filter_input(INPUT_POST, 'tuote_nimi', FILTER_UNSAFE_RAW);
   $hinta = filter_input(INPUT_POST, 'tuote_hinta', FILTER_SANITIZE_NUMBER_INT);
@@ -47,4 +47,4 @@ function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $db)
     <option value="3">Huonekalut</option>
     <option value="4">Piensisustus</option>
   </select><br><br>
-  <input type="submit" name="lisaa_tuote" value
+  <input type="submit" name="lisaa_tuote" value="Lisää tuote">

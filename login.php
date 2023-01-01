@@ -1,69 +1,74 @@
 <?php
-
 // Alustetaan sessiomuuttuja
 session_start();
 
+// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
 require('dbconnection.php');
-require('functions.php');
 
+// Luodaan tietokantayhteys
 $db = createSqliteConnection("designtuotteet.db");
 
 // Tarkistetaan, onko käyttäjä jo kirjautunut sisään
 if (isset($_SESSION['kayttajatunnus'])) {
-  // Kirjautuminen on jo tapahtunut, joten ohjataan käyttäjä ylläpito-sivulle
-  header('Location: yllapito.php');
-  exit;
-} else {
-  // Tarkistetaan, onko sisäänkirjautumislomaketta lähetetty
-  if (isset($_POST['login'])) {
+}
+
+// Tarkistetaan, onko sisäänkirjautumislomaketta lähetetty
+if (isset($_POST['login'])) {
     // Sanitoidaan käyttäjän syöttämät tiedot
     $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
     $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
 
     // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
     if (!empty($username) && !empty($password)) {
-      try {
-        // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
-        if (tarkistaKirjautuminen($username, $password, $db)) {
-          echo "kirjautuminen onnistui";
+        // Valmistellaan SQL-lause tietokannan tietojen hakemiseksi
+        $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus=:username");
+        $query->bindParam(':username', $username);
+        // Suoritetaan SQL-lause
+        $query->execute();
+        // Tallennetaan tulos muuttujaan
+        $user = $query->fetch(PDO::FETCH_ASSOC);
 
-          // Asetetaan kirjautumistieto sessiomuuttujaan
-          $_SESSION['kayttajatunnus'] = $username;
-          // Ohjataan käyttäjä ylläpito-sivulle tai etusivulle sen mukaan, onko käyttäjä ylläpitäjä vai ei
-          if (tarkistaYllapitaja($username, $rooli, $db)) {
-            header('Location: yllapito.php');
-          } else {
-            header('Location: index.php');
-          }
-          exit;
-        } else {
-          // Kirjautuminen epäonnistui, ilmoitetaan käyttäjälle
-          echo "Väärä käyttäjätunnus tai salasana.";
+        try {
+            // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
+            if (password_verify($password, $user['salasana'])) {
+                // Asetetaan kirjautumistieto sessiomuuttujaan
+                $_SESSION['kayttajatunnus'] = $username;
+                // Asetetaan sessiomuuttuja, joka kertoo onko käyttäjä ylläpitäjä
+                if ($user['rooli'] == "yllapitaja") {
+                    $_SESSION['yllapitaja'] = true;
+                } else {
+                    $_SESSION['yllapitaja'] = false;
+                }
+                // Ohjataan ylläpitäjä ylläpito-sivulle
+                header('Location: yllapito.php');
+                exit;
+            } else {
+                // Ohjataan tavallinen käyttäjä etusivulle
+                header('Location: index.php');
+                exit;
+            }
+        } catch (PDOException $e) {
+            // Virheenkäsittely
+            echo "Virhe tietokantaan yhdistämisessä: " . $e->getMessage();
         }
-      } catch (PDOException $e) {
-        // Virheenkäsittely
-      }
     } else {
-      echo "Syötä käyttäjätunnus ja salasana.";
+        echo "Syötä käyttäjätunnus ja salasana.";
     }
-  }
 }
 
 ?>
 
 <!-- Sisäänkirjautumislomake -->
 <form action="" method="post">
-  <h3>Kirjaudu</h3>
-  <label for="kayttajatunnus">Käyttäjätunnus:</label><br>
-  <input type="text" name="kayttajatunnus"><br>
-  <label for="salasana">Salasana:</label><br>
-  <input type="password" name="salasana"><br><br>
-  <input type="submit" name="login" value="Kirjaudu sisään">
+    <h3>Kirjaudu</h3>
+    <label for="kayttajatunnus">Käyttäjätunnus:</label><br>
+    <input type="text" name="kayttajatunnus"><br>
+    <label for="salasana">Salasana:</label><br>
+    <input type="password" name="salasana"><br><br>
+    <input type="submit" name="login" value="Kirjaudu sisään">
 </form>
 
 <!-- Uloskirjautumislomake -->
-<form action="" method="post">
-  <input type="submit" name="logout" value="Kirjaudu ulos">
+<form action="logout.php">
+  <input type="submit" value="Kirjaudu ulos">
 </form>
-
-<?php

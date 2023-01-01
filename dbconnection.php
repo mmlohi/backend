@@ -1,8 +1,8 @@
 <?php
 
-function createSqliteConnection(){
+function createSqliteConnection($filename){
     try{
-        $db = new PDO("sqlite:designtuotteet.db");
+        $db = new PDO("sqlite:" .$filename);
         return $db;
     }catch(PDOException $e){
         echo $e->getMessage();

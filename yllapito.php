@@ -2,95 +2,43 @@
 // Alustetaan sessiomuuttuja
 session_start();
 
-require_once 'dbconnection.php';
+// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
+require('dbconnection.php');
 require_once 'functions.php';
 
-// Yhdistetään tietokantaan
-$db = new PDO("sqlite:designtuotteet.db");
+// Luodaan tietokantayhteys
+$db = createSqliteConnection("designtuotteet.db");
 
-// Tarkistetaan, onko käyttäjä lähettänyt sisäänkirjautumislomakkeen
-if (isset($_POST['login'])) {
-
-    // Sanitoidaan käyttäjän syöttämät tiedot
-    $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
-    $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
-
-    // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
-    if (!empty($username) && !empty($password)) {
-        try {
-            // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
-            if (tarkistaKirjautuminen($username, $password, $db)) {
-                // Asetetaan kirjautumistieto sessiomuuttujaan
-                $_SESSION['kayttajatunnus'] = $username;
-            } else {
-                // Käyttäjätunnus tai salasana on väärin
-                echo "Väärä käyttäjätunnus tai salasana.";
-            }
-        } catch (PDOException $e) {
-            // Virheenkäsittely
-        }
-    } else {
-        echo "Syötä käyttäjätunnus ja salasana.";
+if (!isset($_SESSION['kayttajatunnus'])) {
+    // Kirjautuminen ei ole tapahtunut, ohjataan kirjautumissivulle
+    header('Location: login.php');
+    exit;
     }
-}
-
-// Uloskirjautumislomakkeen lähetystiedot
-if (isset($_POST['logout'])) {
-    // Poistetaan kirjautumistieto sessiomuuttujasta
-    unset($_SESSION['kayttajatunnus']);
-}
-
-// Tarkistetaan, onko käyttäjä kirjautunut sisään
-if (isset($_SESSION['kayttajatunnus'])) {
-
-    // Käyttäjä on kirjautunut sisään, tarkistetaan onko käyttäjä ylläpitäjä
-    if (tarkistaYllapitaja($_SESSION['kayttajatunnus'], $db)) {
-
-
-        // Käyttäjä on ylläpitäjä, näytetään ylläpitotoiminnot
-        echo "<h1>Ylläpitotoiminnot</h1>";
-        echo "<p>Täällä näytetään ylläpitäjän toiminnot.</p>";
-        echo "<p><a href='lisaaKayttaja.php'>Lisää käyttäjä</a></p>";
-        //echo "<p><a href='muokkaaKayttajaa.php'>Muokkaa käyttäjää</a></p>";
-        //echo "<p><a href='poistaKayttaja.php'>Poista käyttäjä</a></p>";
-        echo "<p><a href='lisaaTuote.php'>Lisää Tuote</a></p>";
-        echo "<p><a href='lisaaTuoteryhma.php'>Lisää Tuoteryhmä</a></p>";
-        echo "<p><a href='luePalaute.php'>Lue Palautteet</a></p>";
-    } else {
-        // Käyttäjä ei ole ylläpitäjä, näytetään viesti
-        echo "Et ole ylläpitäjä.";
-        echo "<p><a href='palaute.php'>Anna palautetta</a></p>";
-        echo "<p><a href='naytaTuotteet.php'>Näytä tuotteet</a></p>";
+    
+    // Tarkistetaan, onko käyttäjä ylläpitäjä
+    $rooli = 'yllapitaja';
+    if (!tarkistaYllapitaja($_SESSION['kayttajatunnus'], $rooli, $db)) {
+    // Käyttäjä ei ole ylläpitäjä, ohjataan takaisin kirjautumissivulle
+    header('Location: login.php');
+    exit;
     }
-} else {
-    // Käyttäjä ei ole kirjautunut sisään, näytetään sisäänkirjautumislomake
+    
+    // Tästä eteenpäin koodi suoritetaan vain, jos käyttäjä on kirjautunut sisään ja on ylläpitäjä
+    echo "<h1>Ylläpitotoiminnot</h1>";
+    echo "<p>Täällä näytetään ylläpitäjän toiminnot.</p>";
+    echo "<p><a href='lisaaKayttaja.php'>Lisää käyttäjä</a></p>";
+    echo "<p><a href='lisaaTuote.php'>Lisää Tuote</a></p>";
+    echo "<p><a href='lisaaTuoteryhma.php'>Lisää Tuoteryhmä</a></p>";
+    echo "<p><a href='luePalaute.php'>Lue Palautteet</a></p>";
 
-    // Sisäänkirjautumislomakkeen lähetystiedot
-    if (isset($_POST['login'])) {
-        // Sanitoidaan käyttäjän syöttämät tiedot
-        $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
-        $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
-    } else {
-        // Käyttäjä ei ole kirjautunut sisään, näytetään sisäänkirjautumislomake
-
-    }
-}
-
-?>
-<!-- Sisäänkirjautumislomake -->
-<form action="" method="post">
-    <label for="kayttajatunnus">Käyttäjätunnus:</label><br>
-    <input type="text" name="kayttajatunnus"><br>
-    <label for="salasana">Salasana:</label><br>
-    <input type="password" name="salasana"><br><br>
-    <input type="submit" name="login" value="Kirjaudu sisään">
+    ?>
+    <!-- Uloskirjautumislomake -->
+    <form action="logout.php">
+  <input type="submit" value="Kirjaudu ulos">
 </form>
 
-<?php
-// Uloskirjautumislomake
-if (isset($_SESSION['kayttajatunnus'])) {
-    echo '<form action="" method="post">';
-    echo '<input type="submit" name="logout" value="Kirjaudu ulos">';
-    echo '</form>';
-}
-?>
+  
+    
+    
+    
+    
