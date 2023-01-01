@@ -10,34 +10,35 @@ $db = createSqliteConnection("designtuotteet.db");
 
 // Tarkistetaan, onko käyttäjä jo kirjautunut sisään
 if (isset($_SESSION['kayttajatunnus'])) {
-  // Käyttäjä on jo kirjautunut sisään
-
-  if (tarkistaYllapitaja($_SESSION['kayttajatunnus'], $db)) {
-    // Käyttäjä on ylläpitäjä, näytetään ylläpito-sivu
-
-  } else {
-    // Käyttäjä ei ole ylläpitäjä, näytetään viesti
-    echo "Sinulla ei ole pääsyä ylläpito-sivulle.";
-  }
+  // Kirjautuminen on jo tapahtunut, joten ohjataan käyttäjä ylläpito-sivulle
+  header('Location: yllapito.php');
+  exit;
+} else {
   // Tarkistetaan, onko sisäänkirjautumislomaketta lähetetty
   if (isset($_POST['login'])) {
-
     // Sanitoidaan käyttäjän syöttämät tiedot
     $username = filter_input(INPUT_POST, 'kayttajatunnus', FILTER_SANITIZE_SPECIAL_CHARS);
     $password = filter_input(INPUT_POST, 'salasana', FILTER_SANITIZE_SPECIAL_CHARS);
 
     // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
     if (!empty($username) && !empty($password)) {
-
       try {
         // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
         if (tarkistaKirjautuminen($username, $password, $db)) {
-          // Kirjautuminen onnistui
+          echo "kirjautuminen onnistui";
 
           // Asetetaan kirjautumistieto sessiomuuttujaan
           $_SESSION['kayttajatunnus'] = $username;
-          // Ohjataan käyttäjä ylläpito-sivulle
-
+          // Ohjataan käyttäjä ylläpito-sivulle tai etusivulle sen mukaan, onko käyttäjä ylläpitäjä vai ei
+          if (tarkistaYllapitaja($username, $rooli, $db)) {
+            header('Location: yllapito.php');
+          } else {
+            header('Location: index.php');
+          }
+          exit;
+        } else {
+          // Kirjautuminen epäonnistui, ilmoitetaan käyttäjälle
+          echo "Väärä käyttäjätunnus tai salasana.";
         }
       } catch (PDOException $e) {
         // Virheenkäsittely
@@ -46,12 +47,8 @@ if (isset($_SESSION['kayttajatunnus'])) {
       echo "Syötä käyttäjätunnus ja salasana.";
     }
   }
-  // Uloskirjautumislomakkeen lähetystiedot
-  if (isset($_POST['logout'])) {
-    // Poistetaan kirjautumistieto sessiomuuttujasta
-    unset($_SESSION['kayttajatunnus']);
-  }
 }
+
 ?>
 
 <!-- Sisäänkirjautumislomake -->
@@ -68,3 +65,5 @@ if (isset($_SESSION['kayttajatunnus'])) {
 <form action="" method="post">
   <input type="submit" name="logout" value="Kirjaudu ulos">
 </form>
+
+<?php

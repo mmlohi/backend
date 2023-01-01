@@ -1,9 +1,11 @@
 <?php
 
+require_once 'dbconnection.php';
+
 function openSQLite()
 {
     $filename = filter_input(INPUT_POST, 'filename', FILTER_SANITIZE_SPECIAL_CHARS);
-    $db = new PDO("sqlite:$filename");
+    $db = new PDO("sqlite:$filename");  
 }
 
 function selectAsJson(object $db, string $sql): array
@@ -25,26 +27,17 @@ function returnError(PDOException $pdoex): void
     exit();
 }
 
-
-function tarkistaYllapitaja($username, $db)
-{
-    // Tarkistetaan, onko käyttäjä ylläpitäjä
-    $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :username AND rooli = 'ylläpitäjä'");
-    $query->bindParam(':username', $username);
+function tarkistaYllapitaja($kayttajatunnus, $db) {
+    $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :kayttajatunnus AND rooli = 'yllapitaja'");
+    $query->bindParam(':kayttajatunnus', $kayttajatunnus);
     $query->execute();
     $result = $query->fetch();
-
-    if ($result) {
-        // Käyttäjä on ylläpitäjä
-        return true;
-    } else {
-        // Käyttäjä ei ole ylläpitäjä
-        return false;
-    }
+    
+    return $result ? true : false;
 }
 
 function tarkistaKirjautuminen($username, $password, $db) {
-    $stmt = $db->prepare("SELECT * FROM kayttajat WHERE kayttajatunnus = :username AND salasana = :password");
+    $stmt = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus = :username AND salasana = :password");
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':password', $password);
     $stmt->execute();

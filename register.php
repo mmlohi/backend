@@ -10,7 +10,7 @@ if (isset($_POST['kayttaja'])) {
     $nimi = $_POST['nimi'];
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $password_confirm = $_POST['password_confirm '];
+    $password_confirm = $_POST['password_confirm'];
     $rooli = $_POST['rooli'];
 
     // Tarkistetaan, onko käyttäjätunnus jo käytössä
@@ -19,24 +19,22 @@ if (isset($_POST['kayttaja'])) {
     $query->execute();
     $result = $query->fetch();
 
-   
+
     if ($result) {
         // Käyttäjätunnus on jo käytössä
         echo "Valitettavasti käyttäjätunnus on jo käytössä. Valitse toinen käyttäjätunnus.";
     } else {
         // Tarkistetaan, ovatko salasanat samat
+        if ($password !== $password_confirm) {
+            // Salasanat eivät ole samat, ilmoitetaan käyttäjälle
+            echo "Vahvistettu salasana ei täsmää alkuperäiseen salasanaan. Yritä uudelleen";
 
-        if (password_verify($_POST['password'], $hashed_password_from_database)) {
-            // Salasana on oikea
-        } else {
-            // Salasana on väärä
-        }
-            // Lisätään uusi käyttäjä tietokantaan
-            $query = $db->prepare("INSERT INTO kayttaja (nimi, kayttajatunnus, salasana, rooli) VALUES (:nimi, :kayttajatunnus, :salasana, :rooli)");
-            $query->bindParam(':nimi', $nimi, PDO::PARAM_STR);
-            $query->bindParam(':kayttajatunnus', $username, PDO::PARAM_STR);
-            $query->bindParam(':salasana', $hashed_password, PDO::PARAM_STR);
-            $query->bindParam(':rooli', $rooli, PDO::PARAM_STR);
+        // Lisätään uusi käyttäjä tietokantaan
+        $query = $db->prepare("INSERT INTO kayttaja (nimi, kayttajatunnus, salasana, rooli) VALUES (:nimi, :kayttajatunnus, :salasana, :rooli)");
+        $query->bindParam(':nimi', $nimi, PDO::PARAM_STR);
+        $query->bindParam(':kayttajatunnus', $username, PDO::PARAM_STR);
+        $query->bindParam(':salasana', $hashed_password, PDO::PARAM_STR);
+        $query->bindParam(':rooli', $rooli, PDO::PARAM_STR);
 
         try {
             $query->execute();
@@ -44,13 +42,13 @@ if (isset($_POST['kayttaja'])) {
             echo "Virhe lisättäessä käyttäjää: " . $e->getMessage();
         }
 
-                // Kirjataan uusi käyttäjä sisään
-                $_SESSION['kayttajatunnus'] = $username;
-                header('Location: login.php');
-            }
-        }
-
-        ?>
+        // Kirjataan uusi käyttäjä sisään
+        $_SESSION['kayttajatunnus'] = $username;
+        header('Location: login.php');
+    }
+}
+}
+?>
 
 <form action="register.php" method="post">
     <label for="nimi">Nimi:</label><br>
