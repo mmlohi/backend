@@ -1,16 +1,13 @@
 <?php
-// Alustetaan sessiomuuttuja
-session_start();
 
-// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
+session_start();
 require('dbconnection.php');
 
-// Luodaan tietokantayhteys
 $db = createSqliteConnection("designtuotteet.db");
 
 // Tarkistetaan, onko käyttäjä jo kirjautunut sisään
 if (isset($_SESSION['kayttajatunnus'])) {
-  // Kirjautuminen on jo tapahtunut, näytetään etusivun sisältö
+  // Käyttäjä on jo kirjautunut, näytetään etusivu
   ?>
   <h1>Etusivu</h1>
   <p>Tervetuloa <?php echo $_SESSION['kayttajatunnus']; ?>!</p>
@@ -24,7 +21,7 @@ if (isset($_SESSION['kayttajatunnus'])) {
 </form>
   <?php
 } else {
-  // Kirjautuminen ei ole tapahtunut, näytetään sisäänkirjautumislomake
+  //  Ei kirjautumista, näytetään sisäänkirjautumislomake
   ?>
   <form action="login.php" method="post">
     <h3>Kirjaudu</h3>

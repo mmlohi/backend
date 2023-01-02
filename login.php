@@ -1,11 +1,8 @@
 <?php
-// Alustetaan sessiomuuttuja
-session_start();
 
-// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
+session_start();
 require('dbconnection.php');
 
-// Luodaan tietokantayhteys
 $db = createSqliteConnection("designtuotteet.db");
 
 // Tarkistetaan, onko käyttäjä jo kirjautunut sisään
@@ -20,20 +17,15 @@ if (isset($_POST['login'])) {
 
     // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
     if (!empty($username) && !empty($password)) {
-        // Valmistellaan SQL-lause tietokannan tietojen hakemiseksi
         $query = $db->prepare("SELECT * FROM kayttaja WHERE kayttajatunnus=:username");
         $query->bindParam(':username', $username);
-        // Suoritetaan SQL-lause
         $query->execute();
-        // Tallennetaan tulos muuttujaan
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         try {
             // Tarkistetaan, onko käyttäjätunnus ja salasana oikein
             if (password_verify($password, $user['salasana'])) {
-                // Asetetaan kirjautumistieto sessiomuuttujaan
                 $_SESSION['kayttajatunnus'] = $username;
-                // Asetetaan sessiomuuttuja, joka kertoo onko käyttäjä ylläpitäjä
                 if ($user['rooli'] == "yllapitaja") {
                     $_SESSION['yllapitaja'] = true;
                 } else {
@@ -48,7 +40,7 @@ if (isset($_POST['login'])) {
                 exit;
             }
         } catch (PDOException $e) {
-            // Virheenkäsittely
+           
             echo "Virhe tietokantaan yhdistämisessä: " . $e->getMessage();
         }
     } else {

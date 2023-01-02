@@ -22,7 +22,6 @@ try {
       echo  $row['teksti'] . "<br><br>";
     }
   } catch (PDOException $e) {
-    // Virheen tapahtuessa voidaan tarvittaessa tulostaa virheilmoitus
     echo "Virhe: " . $e->getMessage();
   }
 

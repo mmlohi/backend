@@ -22,14 +22,10 @@ if (isset($_POST['lähetä'])) {
   $teksti = filter_var($_POST['teksti'], FILTER_UNSAFE_RAW );
 
   try {
-    // Valmistellaan SQL-lause uuden palautteen lisäämiseksi tietokantaan
     $query = $db->prepare("INSERT INTO palaute (asiakas_id, pvm, teksti) VALUES (:asiakas_id, :pvm, :teksti)");
-  
-    // Suoritetaan SQL-lause ja lisätään uusi palaute tietokantaan
     $query->execute(array(':asiakas_id' => $asiakas_id, ':pvm' => $pvm, ':teksti' => $teksti));
-    
+   //Virheenkäsittely
   } catch (PDOException $e) {
-    // Virheenkäsittely
     echo "Virhe lisättäessä palaute tietokantaan: " . $e->getMessage();
   }
 }

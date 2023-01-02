@@ -1,5 +1,4 @@
 <?php
-// Alustetaan sessiomuuttuja
 session_start();
 
 // Tuhotaan sessiomuuttuja, joka sisältää kirjautumistiedot

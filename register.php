@@ -1,12 +1,8 @@
 <?php
 
-// Alustetaan sessiomuuttuja
 session_start();
-
-// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
 require('dbconnection.php');
 
-// Luodaan tietokantayhteys
 $db = createSqliteConnection("designtuotteet.db");
 
 // Tarkistetaan, onko rekisteröintilomakkeen lähetyspainike painettu

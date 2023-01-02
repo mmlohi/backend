@@ -1,5 +1,5 @@
 <?php
-require('dbconnection.php');//yhdistetty haku
+require('dbconnection.php');
 
 $db = createSqliteConnection("designtuotteet.db");
 

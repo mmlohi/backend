@@ -20,6 +20,6 @@ if ($statement->execute()) {
       echo "<br>";
   }
 } else {
-  // Virheenkäsittely: ilmoitetaan käyttäjälle, että tuotteiden hakeminen ei onnistunut
+  // Virheenkäsittely
   echo "Tuotteiden hakeminen ei onnistunut.";
 }

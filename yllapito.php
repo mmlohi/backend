@@ -26,7 +26,6 @@ if (!isset($_SESSION['kayttajatunnus'])) {
     // Tästä eteenpäin koodi suoritetaan vain, jos käyttäjä on kirjautunut sisään ja on ylläpitäjä
     echo "<h1>Ylläpitotoiminnot</h1>";
     echo "<p>Täällä näytetään ylläpitäjän toiminnot.</p>";
-    echo "<p><a href='lisaaKayttaja.php'>Lisää käyttäjä</a></p>";
     echo "<p><a href='lisaaTuote.php'>Lisää Tuote</a></p>";
     echo "<p><a href='lisaaTuoteryhma.php'>Lisää Tuoteryhmä</a></p>";
     echo "<p><a href='luePalaute.php'>Lue Palautteet</a></p>";
