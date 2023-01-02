@@ -1,10 +1,11 @@
 <?php
 
-$filename = "designtuotteet.db";
-$db = new PDO("sqlite:$filename");
+session_start();
+require('dbconnection.php');
+require_once 'functions.php';
 
-// Tarkistetaan onko käyttäjä kirjautunut ylläpito-osiossa
-if (isset($_SESSION['username'])) {
+$db = createSqliteConnection("designtuotteet.db");
+
 
 // Tarkistetaan onko lomakkeen lähetyspainike painettu
 if (isset($_POST['lisaa_tuote'])) {
@@ -13,11 +14,12 @@ if (isset($_POST['lisaa_tuote'])) {
   $nimi = filter_input(INPUT_POST, 'tuote_nimi', FILTER_UNSAFE_RAW);
   $hinta = filter_input(INPUT_POST, 'tuote_hinta', FILTER_SANITIZE_NUMBER_INT);
   $tuoteryhma_id = filter_input(INPUT_POST, 'tuote_tuoteryhma_id', FILTER_SANITIZE_NUMBER_INT);
+  $kuvaus = filter_input(INPUT_POST, 'tuote_hinta', FILTER_UNSAFE_RAW);
 
   // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
-  if (!empty($nimi) && !empty($hinta) && !empty($tuoteryhma_id)) {
+  if (!empty($nimi) && !empty($hinta) && !empty($tuoteryhma_id)&& !empty($kuvaus)) {
     try {
-      lisaaTuote($nimi, $hinta, $tuoteryhma_id, $db);
+      lisaaTuote($nimi, $hinta, $tuoteryhma_id, $kuvaus,$db );
       echo "Tuote lisätty onnistuneesti!";
     } catch (PDOException $e) {
       echo "Virhe tuotetta lisättäessä: " . $e->getMessage();
@@ -26,12 +28,12 @@ if (isset($_POST['lisaa_tuote'])) {
 }
 
 // Lisätään tuote tietokantaan
-function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $db)
+function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $kuvaus, $db)
 {
-  $query = $db->prepare("INSERT INTO tuote (nimi, hinta, tuoteryhma_id) VALUES (:nimi, :hinta, :tuoteryhma_id)");
-  $query->execute(array(':nimi' => $nimi, ':hinta' => $hinta, ':tuoteryhma_id' => $tuoteryhma_id));
+  $query = $db->prepare("INSERT INTO tuote (nimi, hinta, tuoteryhma_id, kuvaus) VALUES (:nimi, :hinta, :tuoteryhma_id, :kuvaus)");
+  $query->execute(array(':nimi' => $nimi, ':hinta' => $hinta, ':tuoteryhma_id' => $tuoteryhma_id, ':kuvaus' => $kuvaus,));
 }
-}
+
 ?>
 
 <!-- Tuotteen lisäyslomake -->
@@ -45,6 +47,8 @@ function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $db)
     <option value="1">Keramiikka</option>
     <option value="2">Tekstiilit</option>
     <option value="3">Huonekalut</option>
-    <option value="4">Piensisustus</option>
-  </select><br><br>
+    <option value="4">Piensisustus</option>  
+  </select><br>
+  <label for="tuote_kuvaus">Kuvaus:</label><br>
+  <input type="textarea" name="tuote_kuvaus"><br><br>
   <input type="submit" name="lisaa_tuote" value="Lisää tuote">

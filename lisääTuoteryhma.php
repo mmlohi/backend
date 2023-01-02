@@ -1,11 +1,11 @@
 <?php
 
-$filename = "designtuotteet.db";
-$db = new PDO("sqlite:$filename");
+session_start();
+require('dbconnection.php');
+require_once 'functions.php';
 
+$db = createSqliteConnection("designtuotteet.db");
 
-// Tarkistetaan onko käyttäjä kirjautunut ylläpito-osiossa
-if (isset($_SESSION['username'])) {
 
 // Tarkistetaan onko lomakkeen lähetyspainike painettu
 if (isset($_POST['lisaa_tuoteryhma'])) {
@@ -35,7 +35,7 @@ function lisaaTuoteryhma($nimi, $db)
   $query = $db->prepare("INSERT INTO tuoteryhma (nimi) VALUES (:nimi)");
   $query->execute(array(':nimi' => $nimi));
 }
-}
+
 ?>
 <!-- Tuoteryhmän lisäyslomake -->
 <form action="" method="post">
