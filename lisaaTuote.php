@@ -27,12 +27,6 @@ if (isset($_POST['lisaa_tuote'])) {
   }
 }
 
-// Lisätään tuote tietokantaan
-function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $kuvaus, $db)
-{
-  $query = $db->prepare("INSERT INTO tuote (nimi, hinta, tuoteryhma_id, kuvaus) VALUES (:nimi, :hinta, :tuoteryhma_id, :kuvaus)");
-  $query->execute(array(':nimi' => $nimi, ':hinta' => $hinta, ':tuoteryhma_id' => $tuoteryhma_id, ':kuvaus' => $kuvaus,));
-}
 
 ?>
 

@@ -29,13 +29,6 @@ if (isset($_POST['lisaa_tuoteryhma'])) {
   }
 }
 
-// Lisätään tuoteryhmä tietokantaan
-function lisaaTuoteryhma($nimi, $db)
-{
-  $query = $db->prepare("INSERT INTO tuoteryhma (nimi) VALUES (:nimi)");
-  $query->execute(array(':nimi' => $nimi));
-}
-
 ?>
 <!-- Tuoteryhmän lisäyslomake -->
 <form action="" method="post">
