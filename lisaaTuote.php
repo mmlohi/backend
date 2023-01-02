@@ -47,7 +47,8 @@ function lisaaTuote($nimi, $hinta, $tuoteryhma_id, $kuvaus, $db)
     <option value="1">Keramiikka</option>
     <option value="2">Tekstiilit</option>
     <option value="3">Huonekalut</option>
-    <option value="4">Piensisustus</option>  
+    <option value="4">Piensisustus</option>
+    <option value="5">Taide</option>    
   </select><br>
   <label for="tuote_kuvaus">Kuvaus:</label><br>
   <input type="textarea" name="tuote_kuvaus"><br><br>
