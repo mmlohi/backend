@@ -1,16 +1,12 @@
 <?php
-// Alustetaan sessiomuuttuja
 session_start();
-
-// Sisällytetään tietokantayhteyden luontiin tarvittava tiedosto
 require('dbconnection.php');
 require_once 'functions.php';
 
-// Luodaan tietokantayhteys
 $db = createSqliteConnection("designtuotteet.db");
 
 if (!isset($_SESSION['kayttajatunnus'])) {
-    // Kirjautuminen ei ole tapahtunut, ohjataan kirjautumissivulle
+    // Ei vielä kirjautumista, ohjataan kirjautumissivulle
     header('Location: login.php');
     exit;
     }
