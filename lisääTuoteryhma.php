@@ -18,7 +18,7 @@ if (isset($_POST['lisaa_tuoteryhma'])) {
     
     // Lisätään tuoteryhmä tietokantaan
     try {
-      lisaaTuoteryhma($nimi, $db);
+      lisaaTuoteryhma($nimi,$db);
       echo "Tuoteryhmä lisätty onnistuneesti!";
 
     } catch (PDOException $e) {
@@ -28,7 +28,12 @@ if (isset($_POST['lisaa_tuoteryhma'])) {
     echo "Anna tuoteryhmälle nimi.";
   }
 }
-
+// Lisätään tuoteryhma tietokantaan
+function lisaaTuoteryhma($nimi,$db)
+{
+  $query = $db->prepare("INSERT INTO tuoteryhma (nimi) VALUES (:nimi)");
+  $query->execute(array(':nimi' => $nimi));
+}
 ?>
 <!-- Tuoteryhmän lisäyslomake -->
 <form action="" method="post">

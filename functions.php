@@ -48,3 +48,5 @@ function tarkistaKirjautuminen($username, $password, $db) {
     return false;
     }
     }
+
+
