@@ -18,8 +18,8 @@ echo "</form>";
 if (isset($_POST['lähetä'])) {
   // Haetaan lomakkeen kentissä syötetyt arvot
   $asiakas_id = filter_var($_POST['asiakas_id'], FILTER_SANITIZE_NUMBER_INT);
-  $pvm = filter_var($_POST['pvm'], FILTER_UNSAFE_RAW );
-  $teksti = filter_var($_POST['teksti'], FILTER_UNSAFE_RAW );
+  $pvm = filter_var($_POST['pvm'], FILTER_SANITIZE_SPECIAL_CHARS);
+  $teksti = filter_var($_POST['teksti'], FILTER_SANITIZE_SPECIAL_CHARS );
 
   try {
     $query = $db->prepare("INSERT INTO palaute (asiakas_id, pvm, teksti) VALUES (:asiakas_id, :pvm, :teksti)");
