@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-require('dbconnection.php');
-require_once 'functions.php';
+
+require('functions.php');
 
 $db = createSqliteConnection("designtuotteet.db");
 
@@ -28,12 +28,7 @@ if (isset($_POST['lisaa_tuoteryhma'])) {
     echo "Anna tuoteryhmälle nimi.";
   }
 }
-// Lisätään tuoteryhma tietokantaan
-function lisaaTuoteryhma($nimi,$db)
-{
-  $query = $db->prepare("INSERT INTO tuoteryhma (nimi) VALUES (:nimi)");
-  $query->execute(array(':nimi' => $nimi));
-}
+
 ?>
 <!-- Tuoteryhmän lisäyslomake -->
 <form action="" method="post">

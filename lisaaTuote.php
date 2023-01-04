@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-require('dbconnection.php');
-require_once 'functions.php';
+
+require('functions.php');
 
 $db = createSqliteConnection("designtuotteet.db");
 
@@ -27,12 +27,6 @@ if (isset($_POST['lisaa_tuote'])) {
   }
 }
 
-// Lisätään tuote tietokantaan
-function lisaaTuote($tuoteryhma_id, $nimi, $hinta, $kuvaus, $db)
-{
-  $query = $db->prepare("INSERT INTO tuote (tuoteryhma_id,nimi, hinta,  kuvaus) VALUES (:tuoteryhma_id,:nimi, :hinta, :kuvaus)");
-  $query->execute(array(':tuoteryhma_id' => $tuoteryhma_id, ':nimi' => $nimi, ':hinta' => $hinta, ':kuvaus'=> $kuvaus));
-}
 
 ?>
 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('dbconnection.php');
+
 require_once 'functions.php';
 
 $db = createSqliteConnection("designtuotteet.db");

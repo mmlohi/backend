@@ -1,6 +1,6 @@
 <?php
 
-function createSqliteConnection($filename){
+/* function createSqliteConnection($filename){
     try{
         $db = new PDO("sqlite:" .$filename);
         return $db;
@@ -9,5 +9,5 @@ function createSqliteConnection($filename){
     }
 
     return null;
-}
+} */
 

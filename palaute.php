@@ -24,6 +24,7 @@ if (isset($_POST['lähetä'])) {
   try {
     $query = $db->prepare("INSERT INTO palaute (asiakas_id, pvm, teksti) VALUES (:asiakas_id, :pvm, :teksti)");
     $query->execute(array(':asiakas_id' => $asiakas_id, ':pvm' => $pvm, ':teksti' => $teksti));
+    echo "Palaute lähetetty onnistuneesti!";
    //Virheenkäsittely
   } catch (PDOException $e) {
     echo "Virhe lisättäessä palaute tietokantaan: " . $e->getMessage();

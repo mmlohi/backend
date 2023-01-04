@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require('dbconnection.php');
+require('functions.php');
 
 $db = createSqliteConnection("designtuotteet.db");
 

@@ -1,30 +1,24 @@
 <?php
 
-require_once 'dbconnection.php';
 
-function openSQLite()
-{
-    $filename = filter_input(INPUT_POST, 'filename', FILTER_SANITIZE_SPECIAL_CHARS);
-    $db = new PDO("sqlite:$filename");  
-}
 
-function selectAsJson(object $db, string $sql): array
-{
-    $query = $db->query($sql);
-    $results = $query->fetchAll(PDO::FETCH_ASSOC);
-    header('HTTP/1.1 200 OK');
-    return $results;
+function createSqliteConnection($filename){
+    try{
+        $db = new PDO("sqlite:" .$filename);
+        return $db;
+    }catch(PDOException $e){
+        echo $e->getMessage();
+    }
+
+    return null;
 }
 
 
-function returnError(PDOException $pdoex): void
+// Lisätään tuote tietokantaan
+function lisaaTuote($tuoteryhma_id, $nimi, $hinta, $kuvaus, $db)
 {
-    header('HTTP/1.1 500 Internal Server Error');
-    $error = [
-        'error' => $pdoex->getMessage(),
-    ];
-    echo json_encode($error);
-    exit();
+  $query = $db->prepare("INSERT INTO tuote (tuoteryhma_id,nimi, hinta,  kuvaus) VALUES (:tuoteryhma_id,:nimi, :hinta, :kuvaus)");
+  $query->execute(array(':tuoteryhma_id' => $tuoteryhma_id, ':nimi' => $nimi, ':hinta' => $hinta, ':kuvaus'=> $kuvaus));
 }
 
 function tarkistaYllapitaja($kayttajatunnus, $rooli, $db) {
@@ -49,4 +43,9 @@ function tarkistaKirjautuminen($username, $password, $db) {
     }
     }
 
-
+// Lisätään tuoteryhma tietokantaan
+function lisaaTuoteryhma($nimi,$db)
+{
+  $query = $db->prepare("INSERT INTO tuoteryhma (nimi) VALUES (:nimi)");
+  $query->execute(array(':nimi' => $nimi));
+}
