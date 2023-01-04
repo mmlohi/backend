@@ -13,7 +13,7 @@ if (isset($_POST['lisaa_tuote'])) {
   // Sanitoidaan käyttäjän syöttämät tiedot
   $tuoteryhma_id = filter_input(INPUT_POST, 'tuote_tuoteryhma_id', FILTER_SANITIZE_NUMBER_INT);
   $nimi = filter_input(INPUT_POST, 'tuote_nimi', FILTER_SANITIZE_SPECIAL_CHARS);
-  $hinta = filter_input(INPUT_POST, 'tuote_hinta', FILTER_SANITIZE_NUMBER_INT);
+  $hinta = filter_input(INPUT_POST, 'tuote_hinta', FILTER_SANITIZE_SPECIAL_CHARS);
   $kuvaus = filter_input(INPUT_POST, 'tuote_kuvaus', FILTER_SANITIZE_SPECIAL_CHARS);
 
   // Tarkistetaan, että kaikki tarvittavat tiedot on syötetty
